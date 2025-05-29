@@ -1,4 +1,8 @@
+import 'package:ai_assistance/controller/chat_controller.dart';
+import 'package:ai_assistance/model/message.dart';
+import 'package:ai_assistance/widget/message_card.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Chatbot extends StatefulWidget {
   const Chatbot({super.key});
@@ -8,11 +12,11 @@ class Chatbot extends StatefulWidget {
 }
 
 class _ChatbotState extends State<Chatbot> {
-  // final _controller= 
+  final _c = Get.put(ChatController());
   @override
   Widget build(BuildContext context) {
     double deviceWidth = MediaQuery.of(context).size.width;
-    // double deviceHeight = MediaQuery.of(context).size.height;
+    double deviceHeight = MediaQuery.of(context).size.height;
 
     return Scaffold(
         appBar: AppBar(
@@ -26,6 +30,7 @@ class _ChatbotState extends State<Chatbot> {
             children: [
               Expanded(
                   child: TextFormField(
+                controller: _c.textC,
                 textAlign: TextAlign.center,
                 onTapOutside: (event) => FocusScope.of(context).unfocus(),
                 decoration: const InputDecoration(
@@ -41,7 +46,7 @@ class _ChatbotState extends State<Chatbot> {
               CircleAvatar(
                 radius: 24,
                 child: IconButton(
-                  onPressed: () {},
+                  onPressed: _c.askQuestion,
                   icon: const Icon(
                     Icons.rocket_launch_rounded,
                     color: Colors.brown,
@@ -52,8 +57,13 @@ class _ChatbotState extends State<Chatbot> {
             ],
           ),
         ),
-        body: ListView(
-          children: const [],
+        body: Obx(
+          //to update the list automatically use obx to observe the current list for changes
+          () => ListView(
+            padding: EdgeInsets.only(
+                top: deviceHeight * .02, bottom: deviceHeight * .01),
+            children: _c.list.map((e) => MessageCard(message: e)).toList(),
+          ),
         ));
   }
 }
